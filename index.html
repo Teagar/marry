@@ -1,23 +1,229 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <meta charset="utf-8">
-    <title>Casa comigo?</title>
-    <meta name="description" content="Descrição da Página">
-    <meta name="keywords" content="palavras-chave, separadas por vírgulas">
-    <meta name="author" content="Nome do Autor">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./src/style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>QUER CASAR COMIGO?</h1>
-      <div class="answers">
-        <button id="yes-btn">SIM</button>
-        <button id="no-btn">NÃO</button>
-      </div>
-      <p id="love-message" class="hidden">Eu te amo, amor, você é o meu tudo. Eu ainda sou o seu tudo?</p>
-    </div>
-    <script src="./src/app.js"></script>
-  </body>
+<!DOCTYPE html><html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pedido de Casamento 💍❤️</title>
+  <style>
+    :root{
+      --bg1:#ffdde1; /* rosé */
+      --bg2:#ee9ca7; /* pink */
+      --txt:#2a1a1f;
+      --white:#ffffff;
+      --shadow:0 10px 30px rgba(0,0,0,.15);
+      --accent:#ff4d6d;
+      --accent-2:#9b5de5;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial;
+      color:var(--txt);
+      background: radial-gradient(1200px 800px at 20% 10%, #fff5f7 0%, transparent 60%),
+                  radial-gradient(1400px 900px at 80% 90%, #ffe9f0 0%, transparent 60%),
+                  linear-gradient(120deg,var(--bg1),var(--bg2));
+      overflow-x:hidden;
+    }.wrap{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:28px 14px 60px;
+  position:relative;
+  isolation:isolate;
+}
+
+/* Floating hearts background */
+.hearts{position:absolute; inset:0; overflow:hidden; z-index:-1;}
+.heart{position:absolute; width:18px; height:18px; rotate:45deg; opacity:.16; animation: floatUp linear infinite;}
+.heart::before,.heart::after{content:""; position:absolute; width:18px; height:18px; background:currentColor; border-radius:50%;}
+.heart::before{left:-9px;}
+.heart::after{top:-9px;}
+@keyframes floatUp{from{transform:translateY(20vh) scale(.8);}
+                   to{transform:translateY(-120vh) scale(1.2);} }
+
+.card{
+  width:min(840px, 92vw);
+  background:rgba(255,255,255,.78);
+  backdrop-filter: blur(10px);
+  border-radius:28px;
+  box-shadow:var(--shadow);
+  padding:28px;
+}
+
+h1{
+  margin:0 0 10px; font-size:clamp(1.8rem, 2.6vw + 1rem, 3.2rem); line-height:1.1;
+}
+.subtitle{opacity:.8; font-size:clamp(1rem, .7vw + .8rem, 1.2rem); margin-bottom:18px}
+
+.ring{
+  display:inline-flex; gap:10px; align-items:center; 
+  background:linear-gradient(135deg,#fff, #ffe3ec);
+  padding:10px 14px; border-radius:999px; box-shadow:0 6px 16px rgba(255,77,109,.25);
+  font-weight:600; color:#8a2b3a; margin-bottom:18px;
+}
+.ring svg{width:22px; height:22px}
+
+.note{
+  background:#fff; border-radius:20px; padding:16px 18px; line-height:1.6; box-shadow:0 6px 18px rgba(0,0,0,.08);
+  border:1px solid rgba(255,77,109,.20);
+}
+
+.cta{
+  display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:22px;
+}
+
+button{
+  border:none; cursor:pointer; font-weight:700; letter-spacing:.3px;
+  padding:14px 22px; border-radius:16px; transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.btn-yes{background:var(--accent); color:var(--white); box-shadow:0 10px 22px rgba(255,77,109,.35);}
+.btn-yes:active{transform:translateY(1px)}
+
+.btn-no{background:#fff; border:2px dashed var(--accent-2); color:#4a2b7d; position:relative;}
+
+.footer-tip{margin-top:16px; font-size:.95rem; opacity:.8; text-align:center}
+
+.type{border-right:2px solid rgba(0,0,0,.35); white-space:nowrap; overflow:hidden}
+
+/* Confetti */
+.confetti{position:fixed; inset:0; pointer-events:none}
+.piece{position:absolute; top:-10px; font-size:20px; animation: fall linear forwards;}
+@keyframes fall{
+  to { transform: translateY(110vh) rotate(1turn); opacity: 0.9; }
+}
+
+/* Mobile tweaks */
+@media (max-width:480px){
+  .cta{gap:10px}
+  button{padding:12px 18px; border-radius:14px}
+}
+
+  </style>
+</head>
+<body>
+  <div class="wrap" id="wrap">
+    <div class="hearts" id="bgHearts" aria-hidden="true"></div><main class="card" role="dialog" aria-labelledby="title" aria-describedby="desc">
+  <div class="ring">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M12 2l2.5 3.5L12 9 9.5 5.5 12 2z" fill="#ffcc00"/>
+      <circle cx="12" cy="16" r="6.5" stroke="#C79A00" stroke-width="2" fill="#fff6cc"/>
+    </svg>
+    É agora… 💖
+  </div>
+  <h1 id="title"><span class="type" id="type"></span></h1>
+  <p id="desc" class="subtitle">Respira fundo… confia no destino, no nosso time perfeito e nesse friozinho bom na barriga. ✨</p>
+
+  <section class="note">
+    <p>
+      Desde o dia em que te conheci, tudo ficou mais leve, mais bonito e cheio de propósito.
+      Você topa ser minha parceira para todas as aventuras, risadas e fofocas da vida inteira?
+    </p>
+    <p><strong>Quer se casar comigo?</strong> 💍</p>
+  </section>
+
+  <div class="cta">
+    <button class="btn-yes" id="yesBtn" aria-label="Sim, eu aceito">SIM, EU ACEITO ❤️</button>
+    <button class="btn-no" id="noBtn" aria-label="Não">NÃO 😜</button>
+  </div>
+  <p class="footer-tip">Se clicar em <strong>NÃO</strong>, ele foge… porque o destino não erra! 😉</p>
+</main>
+
+  </div>  <div class="confetti" id="confetti" aria-hidden="true"></div>  <script>
+    // ---------- Typewriter headline ----------
+    const typeEl = document.getElementById('type');
+    const text = 'Eu tenho uma pergunta especial pra você…';
+    let i = 0; function type(){ if(i <= text.length){ typeEl.textContent = text.slice(0,i++); setTimeout(type, 40); } else { typeEl.classList.remove('type'); } }
+    type();
+
+    // ---------- Floating hearts background ----------
+    const bg = document.getElementById('bgHearts');
+    const palette = ['#ff4d6d','#ff8fa3','#9b5de5','#f15bb5','#ffcad4'];
+    function spawnHearts(){
+      for(let i=0;i<28;i++){
+        const h = document.createElement('div'); h.className = 'heart';
+        h.style.left = Math.random()*100 + 'vw';
+        h.style.bottom = (-10 + Math.random()*20) + 'vh';
+        h.style.color = palette[Math.floor(Math.random()*palette.length)];
+        h.style.animationDuration = (10 + Math.random()*18) + 's';
+        h.style.animationDelay = (-20 + Math.random()*20) + 's';
+        h.style.opacity = (0.08 + Math.random()*0.18).toFixed(2);
+        h.style.scale = (0.8 + Math.random()*1.2).toFixed(2);
+        bg.appendChild(h);
+      }
+    }
+    spawnHearts();
+
+    // ---------- WhatsApp on YES + confetti ----------
+    const yesBtn = document.getElementById('yesBtn');
+    const confetti = document.getElementById('confetti');
+    yesBtn.addEventListener('click', () => {
+      celebrate();
+      const msg = 'SIM! Eu aceito me casar com você ❤️';
+      const phone = '5575991688886'; // com DDI 55 (Brasil)
+      setTimeout(() => {
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+        window.open(url, '_blank');
+      }, 800);
+    });
+
+    function celebrate(){
+      const emojis = ['💖','💝','💘','✨','💞','💕','💍','🌹'];
+      const pieces = 100;
+      for(let i=0;i<pieces;i++){
+        const span = document.createElement('span');
+        span.className = 'piece';
+        span.textContent = emojis[i % emojis.length];
+        span.style.left = Math.random()*100 + 'vw';
+        span.style.animationDuration = (1.6 + Math.random()*1.6).toFixed(2) + 's';
+        span.style.fontSize = (18 + Math.random()*18).toFixed(0) + 'px';
+        span.style.filter = 'drop-shadow(0 3px 2px rgba(0,0,0,.15))';
+        confetti.appendChild(span);
+        setTimeout(()=>span.remove(), 4000);
+      }
+    }
+
+    // ---------- Moving NO button only when clicked ----------
+    const noBtn = document.getElementById('noBtn');
+    const wrap = document.getElementById('wrap');
+
+    function moveNo(){
+      const btn = noBtn;
+      const padding = 12; // keep inside viewport
+      const maxX = window.innerWidth - btn.offsetWidth - padding;
+      const maxY = window.innerHeight - btn.offsetHeight - padding;
+      const x = Math.max(padding, Math.floor(Math.random() * maxX));
+      const y = Math.max(padding, Math.floor(Math.random() * maxY));
+
+      btn.style.position = 'fixed';
+      btn.style.left = x + 'px';
+      btn.style.top = y + 'px';
+      btn.style.transition = 'transform .08s ease, box-shadow .2s ease, left .15s ease, top .15s ease';
+
+      // playful jiggle
+      btn.animate([
+        { transform:'translateY(0)' },
+        { transform:'translateY(-6px)' },
+        { transform:'translateY(0)' }
+      ], {duration:220, iterations:1, easing:'ease-out'});
+    }
+
+    noBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      moveNo();
+    });
+
+    // keep NO inside when resizing
+    window.addEventListener('resize', () => {
+      if(getComputedStyle(noBtn).position === 'fixed') moveNo();
+    });
+
+    // Accessibility niceties
+    document.addEventListener('keydown', (e)=>{
+      // If someone tries to select NO with Enter/Space, we still move it :)
+      if((e.key === 'Enter' || e.key === ' ') && document.activeElement === noBtn){
+        e.preventDefault(); moveNo();
+      }
+    });
+  </script></body>
 </html>
