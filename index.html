@@ -86,14 +86,12 @@ button{
 
 .type{border-right:2px solid rgba(0,0,0,.35); white-space:nowrap; overflow:hidden}
 
-/* Confetti */
 .confetti{position:fixed; inset:0; pointer-events:none}
 .piece{position:absolute; top:-10px; font-size:20px; animation: fall linear forwards;}
 @keyframes fall{
   to { transform: translateY(110vh) rotate(1turn); opacity: 0.9; }
 }
 
-/* Mobile tweaks */
 @media (max-width:480px){
   .cta{gap:10px}
   button{padding:12px 18px; border-radius:14px}
@@ -160,7 +158,7 @@ button{
     yesBtn.addEventListener('click', () => {
       celebrate();
       const msg = 'SIM! Eu aceito me casar com você ❤️';
-      const phone = '5575991688886'; // com DDI 55 (Brasil)
+      const phone = '5575991688886';
       setTimeout(() => {
         const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
         window.open(url, '_blank');
@@ -227,3 +225,4 @@ button{
     });
   </script></body>
 </html>
+
